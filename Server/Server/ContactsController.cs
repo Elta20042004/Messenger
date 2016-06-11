@@ -17,17 +17,25 @@ namespace Server
                 ServiceLocator.Current.GetInstance<IContactsMapping>();
         }
 
-        //Add Contact IEnumerable<string>
-        // GET api/values 
-        public void Get(string userId, string newContact)
+        // POST http://localhost:9000/api/contacts?userId=Moshe&newContactId=Avi
+        public ResponseCode Post(string userId, string newContactId)
         {
-            _contactsMapping.AddContact(userId, newContact);            
+            _contactsMapping.AddContact(userId, newContactId);     
+            return  ResponseCode.Success;     
         }
 
-        // GET api/values/5 
-        public void Delete(string userId, string contact)
+        // DELETE http://localhost:9000/api/contacts?userId=Moshe&contactId=Avi
+        public ResponseCode Delete(string userId, string contactId)
         {
-            _contactsMapping.DeleteContact(userId, contact);
-        }      
+            _contactsMapping.DeleteContact(userId, contactId);
+            return ResponseCode.Success;
+        }
+
+        //GET http://localhost:9000/api/contacts?userId=Moshe
+        public IEnumerable<string> Get(string userId)
+        {
+            IEnumerable<string> contacts = _contactsMapping.GetContacts(userId);
+            return contacts;
+        } 
     }
 }

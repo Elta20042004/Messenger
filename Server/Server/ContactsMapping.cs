@@ -24,6 +24,11 @@ namespace Server
             return false;
         }
 
+        public IEnumerable<string> GetContacts(string userId)
+        {
+            return _userContacts[userId];
+        }
+
         public void AddContact(string userId, string newContact)
         {
             if (!_userContacts.ContainsKey(userId))
@@ -35,7 +40,7 @@ namespace Server
         }
 
         public void DeleteContact(string userId, string contact)
-        {
+        {                      
             _userContacts[userId].Remove(contact);
         }
     }
