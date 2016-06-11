@@ -4,36 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Server
 {
     public class MessageController : ApiController
     {
-        // GET api/values 
-        public IEnumerable<string> Get()
+        private readonly IMessageStore _messageStore;
+        public MessageController()
         {
-            return new string[] { "value1", "value2" };
+            _messageStore =
+                ServiceLocator.Current.GetInstance<IMessageStore>();
         }
 
-        // GET api/values/5 
-        public string Get(int id)
+        // GET http://localhost:9000/api/message?userId=Moshe&lastSync=2016-10-05
+        public IEnumerable<Message> Get(string userId, DateTime lastSync)
         {
-            return "value";
+            List<Message> lastMessages = _messageStore.GetMessage(userId, lastSync);
+            return lastMessages;
         }
 
-        // POST api/values 
-        public void Post([FromBody]string value)
+        // POST http://localhost:9000/api/message?sender=Moshe&reciever=Avi&text=Hello
+        public ResponseCode Post(string sender, string reciever, string text)
         {
-        }
-
-        // PUT api/values/5 
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5 
-        public void Delete(int id)
-        {
-        }
+            ResponseCode answer = _messageStore.SendMessage(sender, reciever, text);
+            return answer;
+        }  
     }
 }

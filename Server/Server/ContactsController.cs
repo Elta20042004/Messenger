@@ -4,36 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Server
 {
     public class ContactsController : ApiController
     {
-        // GET api/values 
-        public IEnumerable<string> Get()
+        private readonly IContactsMapping _contactsMapping;
+        public ContactsController()
         {
-            return new string[] { "value1", "value2" };
+            _contactsMapping =
+                ServiceLocator.Current.GetInstance<IContactsMapping>();
+        }
+
+        //Add Contact IEnumerable<string>
+        // GET api/values 
+        public void Get(string userId, string newContact)
+        {
+            _contactsMapping.AddContact(userId, newContact);            
         }
 
         // GET api/values/5 
-        public string Get(int id)
+        public void Delete(string userId, string contact)
         {
-            return "value";
-        }
-
-        // POST api/values 
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5 
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5 
-        public void Delete(int id)
-        {
-        }
+            _contactsMapping.DeleteContact(userId, contact);
+        }      
     }
 }

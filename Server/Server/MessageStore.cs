@@ -7,28 +7,30 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class MessageStore
+    public class MessageStore : IMessageStore
     {
-        private Dictionary<string, LinkedList<Message>> _userMessages;
+        private readonly IContactsMapping _contactsMapping;
+        private readonly Dictionary<string, LinkedList<Message>> _userMessages;
 
-        public MessageStore()
+        public MessageStore(IContactsMapping contactsMapping)
         {
+            _contactsMapping = contactsMapping;
             _userMessages = new Dictionary<string, LinkedList<Message>>();
         }
 
-        public List<Message> GetMessage(string myUserId, DateTime timeLastSync)
+        public List<Message> GetMessage(string userId, DateTime timeLastSync)
         {
             List<Message> listOfLastMessages = new List<Message>();
 
-            if (_userMessages[myUserId] == null)
+            if (!_userMessages.ContainsKey(userId))
             {
                 return listOfLastMessages;
             }
 
-            LinkedListNode<Message> lastMessage = _userMessages[myUserId].Last;
+            LinkedListNode<Message> lastMessage = _userMessages[userId].Last;
 
-            while (lastMessage.Value.TimeSpan > timeLastSync
-                && lastMessage.Previous != null)
+            while (lastMessage != null
+                &&  lastMessage.Value.TimeSpan > timeLastSync)              
             {
                 listOfLastMessages.Add(lastMessage.Value);
                 lastMessage = lastMessage.Previous;
@@ -37,6 +39,24 @@ namespace Server
             return listOfLastMessages;
         }
 
+        public ResponseCode SendMessage(string sender, string reciever, string text)
+        {
+            if (!_contactsMapping.ValidateContact(sender, reciever))
+            {
+                return ResponseCode.RecieverNotFound;
+            }
 
+            if (!_userMessages.ContainsKey(reciever))
+            {
+                _userMessages.Add(reciever, new LinkedList<Message>());
+            }
+            Message k = new Message();
+            k.TimeSpan = DateTime.Now;
+            k.Sender = sender;
+            k.Text = text;
+            _userMessages[reciever].AddLast(k);
+
+            return ResponseCode.Success;
+        }
     }
 }

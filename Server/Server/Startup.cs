@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Owin;
 using System.Web.Http;
+using Microsoft.Owin.Logging;
+using Microsoft.Practices.ServiceLocation;
+using Microsoft.Practices.Unity;
 
 namespace Server
 {
@@ -14,6 +17,8 @@ namespace Server
         // parameter in the WebApp.Start method.
         public void Configuration(IAppBuilder appBuilder)
         {
+            InitUnity();
+
             // Configure Web API for self-host. 
             HttpConfiguration config = new HttpConfiguration();
             config.Routes.MapHttpRoute(
@@ -23,6 +28,17 @@ namespace Server
             );
 
             appBuilder.UseWebApi(config);
+        }
+
+        private static void InitUnity()
+        {
+            IUnityContainer container = new UnityContainer();
+
+            container.RegisterType<IMessageStore, MessageStore>(new ContainerControlledLifetimeManager())
+                .RegisterType<IContactsMapping, ContactsMapping>(new ContainerControlledLifetimeManager());
+
+            UnityServiceLocator locator = new UnityServiceLocator(container);
+            ServiceLocator.SetLocatorProvider(() => locator);
         }
     }
 }
