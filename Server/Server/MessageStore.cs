@@ -30,7 +30,7 @@ namespace Server
             LinkedListNode<Message> lastMessage = _userMessages[userId].Last;
 
             while (lastMessage != null
-                &&  lastMessage.Value.TimeSpan > timeLastSync)              
+                && lastMessage.Value.TimeSpan > timeLastSync)
             {
                 listOfLastMessages.Add(lastMessage.Value);
                 lastMessage = lastMessage.Previous;
@@ -50,11 +50,19 @@ namespace Server
             {
                 _userMessages.Add(reciever, new LinkedList<Message>());
             }
+
+            if (!_userMessages.ContainsKey(sender))
+            {
+                _userMessages.Add(sender, new LinkedList<Message>());
+            }
+
             Message k = new Message();
             k.TimeSpan = DateTime.Now;
             k.Sender = sender;
+            k.Reciever = reciever;
             k.Text = text;
             _userMessages[reciever].AddLast(k);
+            _userMessages[sender].AddLast(k);
 
             return ResponseCode.Success;
         }
