@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Practices.ServiceLocation;
+using Server.Entities;
 
 namespace Server
 {
@@ -25,9 +26,9 @@ namespace Server
         }
 
         // POST http://localhost:9000/api/message?sender=Moshe&reciever=Avi&text=Hello
-        public ResponseCode Post(string sender, string reciever, string text)
+        public MessageResponse Post(string sender, string reciever, string text)
         {
-            ResponseCode answer = _messageStore.SendMessage(sender, reciever, text);
+            MessageResponse answer = _messageStore.SendMessage(sender, reciever, text);
             return answer;
         }  
     }

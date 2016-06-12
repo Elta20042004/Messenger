@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Server.Entities;
 
 namespace Server.Test
 {
@@ -17,9 +19,9 @@ namespace Server.Test
 
             MessageStore messageStore = new MessageStore(contactsMapping);
 
-            Assert.AreEqual(ResponseCode.RecieverNotFound, messageStore.SendMessage("Moshe", "Avi", "hello"));
-            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello"));
-            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you"));
+            Assert.AreEqual(ResponseCode.RecieverNotFound, messageStore.SendMessage("Moshe", "Avi", "hello").ResponseCode);
+            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello").ResponseCode);
+            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you").ResponseCode);
         }
 
         [TestMethod]
@@ -32,9 +34,9 @@ namespace Server.Test
 
             MessageStore messageStore = new MessageStore(contactsMapping);
 
-            Assert.AreEqual(ResponseCode.RecieverNotFound, messageStore.SendMessage("Moshe", "Avi", "hello"));
-            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello"));
-            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you"));
+            Assert.AreEqual(ResponseCode.RecieverNotFound, messageStore.SendMessage("Moshe", "Avi", "hello").ResponseCode);
+            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello").ResponseCode);
+            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you").ResponseCode);
 
             var rez = messageStore.GetMessage("Boris", DateTime.Now.AddSeconds(-5));
             Assert.AreEqual("Moshe", rez[0].Sender);

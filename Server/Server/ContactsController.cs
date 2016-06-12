@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Practices.ServiceLocation;
+using Server.Entities;
 
 namespace Server
 {
