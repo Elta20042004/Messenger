@@ -2,10 +2,8 @@ using System;
 
 namespace Server.Entities
 {
-    public class MessageResponse
+    public class MessageId
     {
-        public Guid MessageId { get; set; }
-
-        public ResponseCode ResponseCode { get; set; }
+        public Guid Id { get; set; }
     }
 }

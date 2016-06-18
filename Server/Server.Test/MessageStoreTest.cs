@@ -19,9 +19,9 @@ namespace Server.Test
 
             MessageStore messageStore = new MessageStore(contactsMapping);
 
-            Assert.AreEqual(ResponseCode.RecieverNotFound, messageStore.SendMessage("Moshe", "Avi", "hello").ResponseCode);
-            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello").ResponseCode);
-            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you").ResponseCode);
+            Assert.AreEqual(ResponseCode.RecieverNotFound, messageStore.SendMessage("Moshe", "Avi", "hello").ErrorCode);
+            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello").ErrorCode);
+            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you").ErrorCode);
         }
 
         [TestMethod]
@@ -34,23 +34,23 @@ namespace Server.Test
 
             MessageStore messageStore = new MessageStore(contactsMapping);
 
-            Assert.AreEqual(ResponseCode.RecieverNotFound, messageStore.SendMessage("Moshe", "Avi", "hello").ResponseCode);
-            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello").ResponseCode);
-            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you").ResponseCode);
+            Assert.AreEqual(ResponseCode.RecieverNotFound, messageStore.SendMessage("Moshe", "Avi", "hello").ErrorCode);
+            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello").ErrorCode);
+            Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you").ErrorCode);
 
             var rez = messageStore.GetMessage("Boris", DateTime.Now.AddSeconds(-5));
-            Assert.AreEqual("Moshe", rez[0].Sender);
-            Assert.AreEqual("Boris", rez[0].Reciever);
-            Assert.AreEqual("Moshe", rez[1].Sender);
-            Assert.AreEqual("Boris", rez[1].Reciever);
-            Assert.AreEqual(2, rez.Count);
+            Assert.AreEqual("Moshe", rez.Data[0].Sender);
+            Assert.AreEqual("Boris", rez.Data[0].Reciever);
+            Assert.AreEqual("Moshe", rez.Data[1].Sender);
+            Assert.AreEqual("Boris", rez.Data[1].Reciever);
+            Assert.AreEqual(2, rez.Data.Count);
 
             var rez2 = messageStore.GetMessage("Moshe", DateTime.Now.AddSeconds(-5));
-            Assert.AreEqual(2, rez2.Count);
-            Assert.AreEqual("Moshe", rez2[0].Sender);
-            Assert.AreEqual("Boris", rez2[0].Reciever);
-            Assert.AreEqual("Moshe", rez2[1].Sender);
-            Assert.AreEqual("Boris", rez2[1].Reciever);
+            Assert.AreEqual(2, rez2.Data.Count);
+            Assert.AreEqual("Moshe", rez2.Data[0].Sender);
+            Assert.AreEqual("Boris", rez2.Data[0].Reciever);
+            Assert.AreEqual("Moshe", rez2.Data[1].Sender);
+            Assert.AreEqual("Boris", rez2.Data[1].Reciever);
         }
     }
 }

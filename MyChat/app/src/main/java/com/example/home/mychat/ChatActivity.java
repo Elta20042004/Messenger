@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class Chat extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
 
     private ChatArrayAdapter adp;
     private ListView list;

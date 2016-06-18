@@ -22,7 +22,7 @@ namespace Server
             _userMessagesLock = new ReaderWriterLockSlim();
         }
 
-        public List<Message> GetMessage(string userId, DateTime timeLastSync)
+        public Response<List<Message>> GetMessage(string userId, DateTime timeLastSync)
         {
             _userMessagesLock.EnterReadLock();
             LinkedListNode<Message> lastMessage = null;
@@ -30,7 +30,9 @@ namespace Server
             {
                 if (!_userMessages.ContainsKey(userId))
                 {
-                    return new List<Message>();
+                    return new Response<List<Message>>(
+                        new List<Message>(),
+                        ResponseCode.RecieverNotFound);
                 }
                 lastMessage = _userMessages[userId].Last;
             }
@@ -47,15 +49,15 @@ namespace Server
                 lastMessage = lastMessage.Previous;
             }
 
-            return listOfLastMessages;
+            return new Response<List<Message>>(listOfLastMessages, ResponseCode.Success);
         }
 
-        public MessageResponse SendMessage(string sender, string reciever, string text)
+        public Response<MessageId> SendMessage(string sender, string reciever, string text)
         {
-            MessageResponse messageResponse = new MessageResponse();
+            Response<MessageId> messageResponse = new Response<MessageId>();
             if (!_contactsMapping.ValidateContact(sender, reciever))
             {
-                messageResponse.ResponseCode = ResponseCode.RecieverNotFound;
+                messageResponse.ErrorCode = ResponseCode.RecieverNotFound;
                 return messageResponse;
             }
 
@@ -72,9 +74,12 @@ namespace Server
 
             AddNewMessage(sender, reciever, message);
 
-            messageResponse.ResponseCode = ResponseCode.Success;
-            messageResponse.MessageId = message.Id;
-            return messageResponse;
+            return new Response<MessageId>(
+                new MessageId()
+                {
+                    Id = message.Id
+                },
+                ResponseCode.Success);
         }
 
         private void AddNewMessage(string sender, string reciever, Message k)

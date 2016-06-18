@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="ContactsController.cs" />
     <Compile Include="ContactsMapping.cs" />
+    <Compile Include="Entities\Response.cs" />
     <Compile Include="IContactsMapping.cs" />
     <Compile Include="IMessageStore.cs" />
     <Compile Include="Entities\Message.cs" />

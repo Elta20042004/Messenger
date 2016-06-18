@@ -19,24 +19,24 @@ namespace Server
         }
 
         // POST http://localhost:9000/api/contacts?userId=Moshe&newContactId=Avi
-        public ResponseCode Post(string userId, string newContactId)
+        public Response<bool> Post(string userId, string newContactId)
         {
             _contactsMapping.AddContact(userId, newContactId);     
-            return  ResponseCode.Success;     
+            return new Response<bool>(true, ResponseCode.Success);     
         }
 
         // DELETE http://localhost:9000/api/contacts?userId=Moshe&contactId=Avi
-        public ResponseCode Delete(string userId, string contactId)
+        public Response<bool> Delete(string userId, string contactId)
         {
             _contactsMapping.DeleteContact(userId, contactId);
-            return ResponseCode.Success;
+            return new Response<bool>(true, ResponseCode.Success);
         }
 
         //GET http://localhost:9000/api/contacts?userId=Moshe
-        public IEnumerable<string> Get(string userId)
+        public Response<IEnumerable<string>> Get(string userId)
         {
             IEnumerable<string> contacts = _contactsMapping.GetContacts(userId);
-            return contacts;
+            return new Response<IEnumerable<string>>(contacts, ResponseCode.Success);
         } 
     }
 }

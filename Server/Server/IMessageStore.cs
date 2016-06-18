@@ -6,7 +6,7 @@ namespace Server
 {
     public interface IMessageStore
     {
-        List<Message> GetMessage(string userId, DateTime timeLastSync);
-        MessageResponse SendMessage(string sender, string reciever, string text);
+        Response<List<Message>> GetMessage(string userId, DateTime timeLastSync);
+        Response<MessageId> SendMessage(string sender, string reciever, string text);
     }
 }
