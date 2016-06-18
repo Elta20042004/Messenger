@@ -35,7 +35,9 @@
             android:text="Send"
             android:id="@+id/btn"
             android:layout_alignBottom="@+id/chat"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:onClick="onSendClick"
+            android:nestedScrollingEnabled="false" />
     </RelativeLayout>
 
 </RelativeLayout>
