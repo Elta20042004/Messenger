@@ -19,6 +19,6 @@ public interface ContactService {
     Call<Response<Boolean>> deleteContact (@Query("userId") String userId, @Query("contactId") String contactId);
 
     @GET ("api/contacts")
-    Call<Response<List<Message>>> getContact (@Query("userId") String userId);
+    Call<Response<List<String>>> getContacts (@Query("userId") String userId);
 
 }

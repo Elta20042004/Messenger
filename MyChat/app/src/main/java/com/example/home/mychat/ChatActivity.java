@@ -44,8 +44,6 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 return false;
             }
-
-
         });
 
         send.setOnClickListener(new View.OnClickListener(){
@@ -65,8 +63,8 @@ public class ChatActivity extends AppCompatActivity {
                 list.setSelection(adp.getCount()-1);
             }
         });
-
     }
+
     private boolean sendChatMessage() {
 
         adp.add(new ChatMessage(side, chatText.getText().toString()));
@@ -74,5 +72,4 @@ public class ChatActivity extends AppCompatActivity {
         side=!side;
         return true;
     }
-
 }

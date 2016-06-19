@@ -1,12 +1,7 @@
 package com.example.home.mychat;
 
-import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AbsListView;
@@ -15,29 +10,52 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class ContactsActivity extends AppCompatActivity {
 
-    private ArrayAdapter<Contact> adpContacts;
+    private ArrayAdapter<String> adpContacts;
     private ListView listContacts;
     private EditText contactName;
     private Button addContact;
-    private boolean side = false;
+    public  ConnectionToServer connectionToServer=new ConnectionToServer();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.contacts);
+
+        setContentView(R.layout.activity_contacts);
+
+        Call<Response<List<String>>> call =
+                connectionToServer.getContactService().getContacts("Lena");
+        call.enqueue(new Callback<Response<List<String>>>() {
+            @Override
+            public void onResponse(Call<Response<List<String>>> call, retrofit2.Response<Response<List<String>>> response) {
+                if (response.isSuccessful()) {
+                    Response<List<String>> contacts=response.body();
+                    adpContacts.addAll(contacts.Data);
+                } else {
+                    // error response, no access to resource?
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Response<List<String>>> call, Throwable t) {
+                String s = t.toString();
+            }
+        });
+
 
         addContact = (Button) findViewById(R.id.btnContacts);
 
         listContacts = (ListView) findViewById(R.id.ListviewContacts);
 
-        adpContacts = new ArrayAdapter<Contact>(getApplicationContext(), R.layout.contacts);
+        adpContacts = new ArrayAdapter<String>(getApplicationContext(), R.layout.contact);
 
         contactName = (EditText) findViewById(R.id.contact);
 
@@ -64,22 +82,41 @@ public class ContactsActivity extends AppCompatActivity {
         listContacts.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listContacts.setAdapter(adpContacts);
 
-        adpContacts.registerDataSetObserver(new DataSetObserver() {
-            public void OnChanged() {
-                super.onChanged();
-
-                listContacts.setSelection(adpContacts.getCount() - 1);
-            }
-        });
-
+//        adpContacts.registerDataSetObserver(new DataSetObserver() {
+//            public void OnChanged() {
+//                super.onChanged();
+//
+//                listContacts.setSelection(adpContacts.getCount() - 1);
+//            }
+//        });
     }
 
     private boolean addNewContact() {
+        final String newContact = contactName.getText().toString();
 
-        adpContacts.add(new Contact(contactName.getText().toString()));
+        connectionToServer.getContactService()
+                .addNewContact("Lena",newContact)
+                .enqueue(new Callback<Response<Boolean>>() {
+            @Override
+            public void onResponse(Call<Response<Boolean>> call, retrofit2.Response<Response<Boolean>> response) {
+                if (response.isSuccessful()) {
+                    Response<Boolean> contacts=response.body();
+                    if (contacts.Data) {
+                        adpContacts.add(newContact);
+                    }
+                } else {
+                    // error response, no access to resource?
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Response<Boolean>> call, Throwable t) {
+                String s = t.toString();
+            }
+        });
+
         contactName.setText("");
+
         return true;
     }
-
-
 }

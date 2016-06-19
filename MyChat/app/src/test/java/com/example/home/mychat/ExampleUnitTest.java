@@ -24,34 +24,31 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                .create();
+       ConnectionToServer connectionToServer = new ConnectionToServer();
 
+       Response<com.example.home.mychat.Response<Boolean>> response =
+               connectionToServer.getContactService().addNewContact("Lena","Alex").execute();
+       Response<com.example.home.mychat.Response<MessageId>> messageResponse =
+               connectionToServer.getMessageService().sendMessage("Alex","Lena","I love you").execute();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:9000/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+       String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date(0));
 
-        MessageService messageService = retrofit.create(MessageService.class);
-        ContactService contactService = retrofit.create(ContactService.class);
+       Call<com.example.home.mychat.Response<List<Message>>> res =
+               connectionToServer.getMessageService().getLastMessages("Lena",  date);
+       Response<com.example.home.mychat.Response<List<Message>>> resp = res.execute();
+       com.example.home.mychat.Response<List<Message>> resList = resp.body();
 
+       Assert.assertEquals(1,resList.Data.size());
+       Assert.assertEquals("I love you",resList.Data.get(0));
+    }
+
+    @Test
+    public void contacts_isCorrect() throws Exception {
+        ConnectionToServer connectionToServer = new ConnectionToServer();
 
         Response<com.example.home.mychat.Response<Boolean>> response =
-                contactService.addNewContact("Lena","Alex").execute();
-        Response<com.example.home.mychat.Response<MessageId>> messageResponse =
-                messageService.sendMessage("Alex","Lena","I love you").execute();
-
-        String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date(0)).toString();
-
-        Call<com.example.home.mychat.Response<List<Message>>> res =
-                messageService.getLastMessages("Lena",  date);
-        Response<com.example.home.mychat.Response<List<Message>>> resp = res.execute();
-        com.example.home.mychat.Response<List<Message>> resList = resp.body();
-
-        Assert.assertEquals(1,resList.Data.size());
-        Assert.assertEquals("I love you",resList.Data.get(0));
+                connectionToServer.getContactService().addNewContact("Lena","Alex").execute();
+        Response<com.example.home.mychat.Response<List<Contact>>> contacts=
+                connectionToServer.getContactService().getContacts("Lena").execute();
     }
 }
