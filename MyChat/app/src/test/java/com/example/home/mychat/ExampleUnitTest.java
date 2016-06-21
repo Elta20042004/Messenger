@@ -48,7 +48,7 @@ public class ExampleUnitTest {
 
         Response<com.example.home.mychat.Response<Boolean>> response =
                 connectionToServer.getContactService().addNewContact("Lena","Alex").execute();
-        Response<com.example.home.mychat.Response<List<Contact>>> contacts=
+        Response<com.example.home.mychat.Response<List<String>>> contacts=
                 connectionToServer.getContactService().getContacts("Lena").execute();
     }
 }

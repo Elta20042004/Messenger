@@ -12,6 +12,7 @@ namespace Server
         {
             _userContactsLock = new ReaderWriterLockSlim();
             _userContacts = new Dictionary<string, HashSet<string>>();
+            _userContacts.Add("Lena",new HashSet<string>());
         }
 
         public bool ValidateContact(string sender, string reciever)

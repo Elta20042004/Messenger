@@ -1,6 +1,5 @@
 package com.example.home.mychat;
 
-import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -20,35 +29,53 @@ public class ChatActivity extends AppCompatActivity {
     private EditText chatText;
     private Button send;
     private boolean side = false;
+    private String me;
+    private String reciever;
+    private HashSet<String> messageIds;
+    private Date lastSync;
+    public ConnectionToServer connectionToServer = new ConnectionToServer();
+    private Timer timer;
+    private MyTimerTask timerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        send =(Button)findViewById(R.id.btn);
+        send = (Button) findViewById(R.id.btn);
 
-        list = (ListView)findViewById(R.id.Listview);
+        list = (ListView) findViewById(R.id.Listview);
 
-        adp = new ChatArrayAdapter(getApplicationContext(),R.layout.chat);
+        adp = new ChatArrayAdapter(getApplicationContext(), R.layout.chat);
 
-        chatText = (EditText)findViewById(R.id.chat);
+        chatText = (EditText) findViewById(R.id.chat);
+
+        messageIds =new HashSet<>();
+
+        //Poluchit' dannye iz ContactActivity
+        Bundle b = getIntent().getExtras();
+        String sendlerKey = b.getString("sendler");
+        String recieverKey = b.getString("reciever");
+        me = sendlerKey;
+        reciever = recieverKey;
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR, -1);
+        lastSync = cal.getTime();
 
         chatText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-                if ((event.getAction()==KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER))
-                {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     return sendChatMessage();
                 }
                 return false;
             }
         });
 
-        send.setOnClickListener(new View.OnClickListener(){
+        send.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 sendChatMessage();
             }
         });
@@ -57,19 +84,100 @@ public class ChatActivity extends AppCompatActivity {
         list.setAdapter(adp);
 
         adp.registerDataSetObserver(new DataSetObserver() {
-            public void OnChanged(){
+            public void OnChanged() {
                 super.onChanged();
 
-                list.setSelection(adp.getCount()-1);
+                list.setSelection(adp.getCount() - 1);
             }
         });
+
+        timer = new Timer();
+        timerTask = new MyTimerTask();
+        timer.schedule(timerTask, 0, 500);
+    }
+
+    @Override
+    protected void onStop(){
+        timer.cancel();
     }
 
     private boolean sendChatMessage() {
+        final String newMessage = chatText.getText().toString();
 
-        adp.add(new ChatMessage(side, chatText.getText().toString()));
+        connectionToServer.getMessageService()
+                            .sendMessage(me, reciever, chatText.getText().toString())
+                            .enqueue(new Callback<Response<MessageId>>() {
+                        @Override
+                        public void onResponse(Call<Response<MessageId>> call,
+                                retrofit2.Response<Response<MessageId>> response) {
+                            if (response.isSuccessful()) {
+                                Response<MessageId> message = response.body();
+                                if (message.ErrorCode == ResponseCode.Success) {
+                                    adp.add(new ChatMessage(true, newMessage));
+                                    messageIds.add(message.Data.Id);
+                                }
+                            } else {
+                                // error response, no access to resource?
+                            }
+                        }
+
+                    @Override
+                    public void onFailure(Call<Response<MessageId>> call, Throwable t) {
+                    }
+                });
+
         chatText.setText("");
-        side=!side;
+        side = !side;
         return true;
+    }
+
+    class MyTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(lastSync);
+            final Date tempLastSync = new Date();
+            connectionToServer.getMessageService()
+                    .getLastMessages(me, date)
+                    .enqueue(new Callback<Response<List<Message>>>() {
+                        @Override
+                        public void onResponse(Call<Response<List<Message>>> call,
+                                               retrofit2.Response<Response<List<Message>>> response) {
+                            if (response.isSuccessful()) {
+                                Response<List<Message>> messages = response.body();
+                                if (messages.ErrorCode == ResponseCode.Success) {
+                                    lastSync = tempLastSync;
+                                    for (Message message:messages.Data) {
+                                        if (!messageIds.contains(message.id)) {
+                                            if (message.sender.equalsIgnoreCase(reciever)) {
+                                                adp.add(new ChatMessage(false, message.text));
+                                                messageIds.add(message.id);
+                                            }
+                                            else if (message.sender.equalsIgnoreCase(me)) {
+                                                adp.add(new ChatMessage(true, message.text));
+                                                messageIds.add(message.id);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // error response, no access to resource?
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Response<List<Message>>> call, Throwable t) {
+                        }
+                    });
+
+
+//            runOnUiThread(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    adp.setText(strDate);
+//                }
+//            });
+        }
     }
 }

@@ -1,14 +1,19 @@
 package com.example.home.mychat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +28,7 @@ public class ContactsActivity extends AppCompatActivity {
     private EditText contactName;
     private Button addContact;
     public  ConnectionToServer connectionToServer=new ConnectionToServer();
-
+   // private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,10 @@ public class ContactsActivity extends AppCompatActivity {
 
         listContacts = (ListView) findViewById(R.id.ListviewContacts);
 
+
+
+        //textView = (LinearLayout)findViewById(R.id.text1);
+
         adpContacts = new ArrayAdapter<String>(getApplicationContext(), R.layout.contact);
 
         contactName = (EditText) findViewById(R.id.contact);
@@ -66,10 +75,9 @@ public class ContactsActivity extends AppCompatActivity {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     return addNewContact();
                 }
+
                 return false;
             }
-
-
         });
 
         addContact.setOnClickListener(new View.OnClickListener() {
@@ -82,14 +90,24 @@ public class ContactsActivity extends AppCompatActivity {
         listContacts.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listContacts.setAdapter(adpContacts);
 
-//        adpContacts.registerDataSetObserver(new DataSetObserver() {
-//            public void OnChanged() {
-//                super.onChanged();
-//
-//                listContacts.setSelection(adpContacts.getCount() - 1);
-//            }
-//        });
+       listContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+           @Override
+           public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+               Object o = listContacts.getItemAtPosition(position);
+               String str=(String)o;
+               Intent intent = new Intent(ContactsActivity.this, ChatActivity.class);
+               Bundle b = new Bundle();
+               b.putString("sendler","Lena");
+               b.putString("reciever",str);
+               intent.putExtras(b);
+               ContactsActivity.this.startActivity(intent);
+               finish();
+           }
+       });
     }
+
+
 
     private boolean addNewContact() {
         final String newContact = contactName.getText().toString();
