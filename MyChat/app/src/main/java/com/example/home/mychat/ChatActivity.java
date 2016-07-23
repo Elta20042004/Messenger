@@ -15,10 +15,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.example.home.mychat.provider.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -44,27 +44,27 @@ public class ChatActivity extends AppCompatActivity {
 
         send = (Button) findViewById(R.id.btn);
 
-        list = (ListView) findViewById(R.id.Listview);
+                list = (ListView) findViewById(R.id.Listview);
 
-        adp = new ChatArrayAdapter(getApplicationContext(), R.layout.chat);
+                adp = new ChatArrayAdapter(getApplicationContext(), R.layout.chat);
 
-        chatText = (EditText) findViewById(R.id.chat);
+                chatText = (EditText) findViewById(R.id.chat);
 
-        messageIds =new HashSet<>();
+                messageIds =new HashSet<>();
 
-        //Poluchit' dannye iz ContactActivity
-        Bundle b = getIntent().getExtras();
-        String sendlerKey = b.getString("sendler");
-        String recieverKey = b.getString("reciever");
-        me = sendlerKey;
-        reciever = recieverKey;
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.HOUR, -1);
-        lastSync = cal.getTime();
+                //Poluchit' dannye iz ContactActivity
+                Bundle b = getIntent().getExtras();
+                String sendlerKey = b.getString("sendler");
+                String recieverKey = b.getString("reciever");
+                me = sendlerKey;
+                reciever = recieverKey;
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.HOUR, -1);
+                lastSync = cal.getTime();
 
-        chatText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                chatText.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     return sendChatMessage();
@@ -93,7 +93,7 @@ public class ChatActivity extends AppCompatActivity {
 
         timer = new Timer();
         timerTask = new MyTimerTask();
-        timer.schedule(timerTask, 0, 500);
+        timer.schedule(timerTask, 0,2000);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.home.mychat;
+package com.example.home.mychat.provider;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

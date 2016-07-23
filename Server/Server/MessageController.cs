@@ -21,7 +21,7 @@ namespace Server
         // GET http://localhost:9000/api/message?userId=Moshe&lastSync=2016-10-05
         public Response<List<Message>> Get(string userId, DateTime lastSync)
         {
-            var lastMessages = _messageStore.GetMessage(userId, lastSync);
+            var lastMessages = _messageStore.GetMessage(userId, lastSync.AddSeconds(-30));
             return lastMessages;
         }
 

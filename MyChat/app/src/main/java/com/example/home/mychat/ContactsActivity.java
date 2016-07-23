@@ -5,21 +5,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.IOException;
-import java.util.List;
-
+import android.widget.*;
+import com.example.home.mychat.provider.ConnectionToServer;
+import com.example.home.mychat.provider.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import java.util.List;
 
 public class ContactsActivity extends AppCompatActivity {
 
@@ -27,17 +19,22 @@ public class ContactsActivity extends AppCompatActivity {
     private ListView listContacts;
     private EditText contactName;
     private Button addContact;
-    public  ConnectionToServer connectionToServer=new ConnectionToServer();
+    public ConnectionToServer connectionToServer=new ConnectionToServer();
    // private TextView textView;
 
+
+    private String email;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate( final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_contacts);
+        Bundle b = getIntent().getExtras();
+        email = b.getString("sendler");
 
         Call<Response<List<String>>> call =
-                connectionToServer.getContactService().getContacts("Lena");
+                connectionToServer.getContactService().getContacts(email);
         call.enqueue(new Callback<Response<List<String>>>() {
             @Override
             public void onResponse(Call<Response<List<String>>> call, retrofit2.Response<Response<List<String>>> response) {
@@ -90,6 +87,7 @@ public class ContactsActivity extends AppCompatActivity {
         listContacts.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listContacts.setAdapter(adpContacts);
 
+
        listContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
            @Override
@@ -97,8 +95,9 @@ public class ContactsActivity extends AppCompatActivity {
                Object o = listContacts.getItemAtPosition(position);
                String str=(String)o;
                Intent intent = new Intent(ContactsActivity.this, ChatActivity.class);
-               Bundle b = new Bundle();
-               b.putString("sendler","Lena");
+               Bundle b = getIntent().getExtras();
+
+               b.putString("sendler",email);
                b.putString("reciever",str);
                intent.putExtras(b);
                ContactsActivity.this.startActivity(intent);
@@ -113,7 +112,7 @@ public class ContactsActivity extends AppCompatActivity {
         final String newContact = contactName.getText().toString();
 
         connectionToServer.getContactService()
-                .addNewContact("Lena",newContact)
+                .addNewContact(email,newContact)
                 .enqueue(new Callback<Response<Boolean>>() {
             @Override
             public void onResponse(Call<Response<Boolean>> call, retrofit2.Response<Response<Boolean>> response) {

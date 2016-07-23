@@ -3,6 +3,7 @@ using System.Threading;
 
 namespace Server
 {
+
     public class ContactsMapping : IContactsMapping
     {
         private readonly Dictionary<string, HashSet<string>> _userContacts;
@@ -12,7 +13,11 @@ namespace Server
         {
             _userContactsLock = new ReaderWriterLockSlim();
             _userContacts = new Dictionary<string, HashSet<string>>();
-            _userContacts.Add("Lena",new HashSet<string>());
+        }
+
+        public void CreateNewUser(string userId)
+        {
+            _userContacts.Add(userId, new HashSet<string>());
         }
 
         public bool ValidateContact(string sender, string reciever)

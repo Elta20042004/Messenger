@@ -35,7 +35,8 @@ namespace Server
             IUnityContainer container = new UnityContainer();
 
             container.RegisterType<IMessageStore, MessageStore>(new ContainerControlledLifetimeManager())
-                .RegisterType<IContactsMapping, ContactsMapping>(new ContainerControlledLifetimeManager());
+                .RegisterType<IContactsMapping, ContactsMapping>(new ContainerControlledLifetimeManager())
+                .RegisterType<LoginPasswordVerification, LoginPasswordVerification>(new ContainerControlledLifetimeManager());
 
             UnityServiceLocator locator = new UnityServiceLocator(container);
             ServiceLocator.SetLocatorProvider(() => locator);

@@ -1,5 +1,9 @@
-package com.example.home.mychat;
+package com.example.home.mychat.provider;
 
+import com.example.home.mychat.provider.ContactService;
+import com.example.home.mychat.provider.MessageService;
+import com.example.home.mychat.provider.ResponseCode;
+import com.example.home.mychat.provider.ResponseCodeDeserializer;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +28,7 @@ public class ConnectionToServer {
 
     MessageService messageService = retrofit.create(MessageService.class);
     ContactService contactService = retrofit.create(ContactService.class);
+    LoginService loginService = retrofit.create( LoginService.class );
 
     public MessageService getMessageService()
     {
@@ -34,4 +39,6 @@ public class ConnectionToServer {
     {
         return contactService;
     }
+
+    public LoginService getLoginService() { return loginService; }
 }

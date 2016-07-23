@@ -98,6 +98,8 @@
     <Compile Include="IContactsMapping.cs" />
     <Compile Include="IMessageStore.cs" />
     <Compile Include="Entities\Message.cs" />
+    <Compile Include="LoginController.cs" />
+    <Compile Include="LoginPasswordVerification.cs" />
     <Compile Include="MessageController.cs" />
     <Compile Include="Entities\MessageResponse.cs" />
     <Compile Include="MessageStore.cs" />

@@ -1,4 +1,4 @@
-package com.example.home.mychat;
+package com.example.home.mychat.provider;
 
 /**
  * Created by Home on 6/18/2016.
