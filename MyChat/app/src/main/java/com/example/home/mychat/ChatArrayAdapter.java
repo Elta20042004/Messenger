@@ -3,6 +3,7 @@ package com.example.home.mychat;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +59,8 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage>{
         chatText = (TextView)v.findViewById(R.id.SingleMessage);
 
         chatText.setText(message.getText());
-        chatText.setBackgroundColor(message.getSide()?Color.GREEN:Color.BLUE);
+      //  chatText.setBackgroundColor(message.getSide()?Color.GREEN:Color.BLUE);
+        chatText.setTypeface(null, message.getSide() ? Typeface.NORMAL: Typeface.ITALIC);
 
         layout.setGravity(message.getSide()? Gravity.LEFT:Gravity.RIGHT);
 

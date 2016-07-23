@@ -16,9 +16,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="6dp"
-            android:background="#b5a0a0"
             android:paddingLeft="10dip"
             android:text="Hello friends"
-            android:textColor="@android:color/primary_text_light"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/primary_text_light"
+            android:textStyle="italic"/>
     </LinearLayout>
 </LinearLayout>
