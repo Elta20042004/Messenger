@@ -54,12 +54,11 @@ namespace Server
 
         public Response<MessageId> SendMessage(string sender, string reciever, string text)
         {
-            Response<MessageId> messageResponse = new Response<MessageId>();
-            if (!_contactsMapping.ValidateContact(sender, reciever))
-            {
-                messageResponse.ErrorCode = ResponseCode.RecieverNotFound;
-                return messageResponse;
-            }
+            //if (!_contactsMapping.ValidateContact(sender, reciever))
+            //{
+            //    messageResponse.ErrorCode = ResponseCode.RecieverNotFound;
+            //    return messageResponse;
+            //}
 
             AddUsersIfNotExists(sender, reciever);
 

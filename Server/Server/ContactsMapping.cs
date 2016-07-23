@@ -18,28 +18,7 @@ namespace Server
         public void CreateNewUser(string userId)
         {
             _userContacts.Add(userId, new HashSet<string>());
-        }
-
-        public bool ValidateContact(string sender, string reciever)
-        {
-            _userContactsLock.EnterReadLock();
-            try
-            {
-                if (_userContacts.ContainsKey(reciever))
-                {
-                    if (_userContacts[reciever].Contains(sender))
-                    {
-                        return true;
-                    }
-                }
-            }
-            finally
-            {
-                _userContactsLock.ExitReadLock();
-            }
-
-            return false;
-        }
+        }       
 
         public IEnumerable<string> GetContacts(string userId)
         {

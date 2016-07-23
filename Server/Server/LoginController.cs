@@ -20,11 +20,10 @@ namespace Server
         {
             Console.WriteLine(this.Request.RequestUri);
             bool ok = _loginPasswordVerification.Authorization(login, password);
-            if (ok)
-            {
-                return new Response<bool>(true, ResponseCode.Success);
-            }
-            return new Response<bool>(false, ResponseCode.InternalError);
+            return new Response<bool>(ok, 
+                ok 
+                ? ResponseCode.Success
+                : ResponseCode.InternalError);
         }
     }
 }
