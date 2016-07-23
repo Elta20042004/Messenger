@@ -18,10 +18,10 @@ namespace Server
                 ServiceLocator.Current.GetInstance<IMessageStore>();
         }
 
-        // GET http://localhost:9000/api/message?userId=Moshe&lastSync=2016-10-05
-        public Response<List<Message>> Get(string userId, DateTime lastSync)
+        // GET http://localhost:9000/api/message?userId=Moshe&lastMessageNumber=-1
+        public Response<List<Message>> Get(string userId, int lastMessageNumber)
         {
-            var lastMessages = _messageStore.GetMessage(userId, lastSync.AddSeconds(-30));
+            var lastMessages = _messageStore.GetMessage(userId, lastMessageNumber);
             return lastMessages;
         }
 

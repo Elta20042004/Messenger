@@ -12,7 +12,7 @@ import retrofit2.http.Query;
  */
 public interface MessageService {
     @GET("api/message")
-    Call<Response<List<Message>>> getLastMessages(@Query("userId") String sender, @Query("lastSync") String lastSync);
+    Call<Response<List<Message>>> getLastMessages(@Query("userId") String sender, @Query("lastMessageNumber") int lastMessageNumber);
 
     @POST("api/message")
     Call<Response<MessageId>> sendMessage(@Query("sender") String sender,

@@ -22,7 +22,7 @@ namespace Server
             _userMessagesLock = new ReaderWriterLockSlim();
         }
 
-        public Response<List<Message>> GetMessage(string userId, DateTime timeLastSync)
+        public Response<List<Message>> GetMessage(string userId, int lastMessageNumber)
         {
             _userMessagesLock.EnterReadLock();
             LinkedListNode<Message> lastMessage = null;
@@ -43,7 +43,7 @@ namespace Server
 
             var listOfLastMessages = new List<Message>();
             while (lastMessage != null
-                && lastMessage.Value.TimeSpan > timeLastSync)
+                && lastMessage.Value.MessageNumber > lastMessageNumber)
             {
                 listOfLastMessages.Add(lastMessage.Value);
                 lastMessage = lastMessage.Previous;
@@ -63,32 +63,37 @@ namespace Server
 
             AddUsersIfNotExists(sender, reciever);
 
-            var message = new Message
-            {
-                TimeSpan = DateTime.Now,
-                Sender = sender,
-                Reciever = reciever,
-                Text = text,
-                Id = Guid.NewGuid()
-            };
-
-            AddNewMessage(sender, reciever, message);
+            int messageNumber = AddNewMessage(sender, reciever, text);
 
             return new Response<MessageId>(
                 new MessageId()
                 {
-                    Id = message.Id
+                    MessageNumber = messageNumber
                 },
                 ResponseCode.Success);
         }
 
-        private void AddNewMessage(string sender, string reciever, Message k)
+        private int AddNewMessage(string sender, string reciever, string text)
         {
             _userMessagesLock.EnterReadLock();
             try
             {
-                _userMessages[reciever].AddLast(k);
-                _userMessages[sender].AddLast(k);
+                var message = new Message
+                {
+                    TimeSpan = DateTime.Now,
+                    Sender = sender,
+                    Reciever = reciever,
+                    Text = text,
+                    MessageNumber = _userMessages[reciever].Count
+                };
+
+                _userMessages[reciever].AddLast(message);
+
+                var senderMessage = message.Clone() as Message;
+                senderMessage.MessageNumber = _userMessages[sender].Count;
+                _userMessages[sender].AddLast(senderMessage);
+
+                return senderMessage.MessageNumber;
             }
             finally
             {

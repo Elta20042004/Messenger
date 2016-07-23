@@ -1,5 +1,4 @@
 ﻿using System.Web.Http;
-using System.Web.Http.Results;
 using Microsoft.Practices.ServiceLocation;
 using Server.Entities;
 
@@ -15,7 +14,7 @@ namespace Server
                 ServiceLocator.Current.GetInstance <LoginPasswordVerification>();
         }
 
-        // POST http://localhost:9000/api/contacts?userId=Moshe&newContactId=Avi
+        // POST http://localhost:9000/api/login?login=Moshe&password=bla
         public Response<bool> Post(string login, string password)
         {
             bool ok = _loginPasswordVerification.Authorization(login, password);

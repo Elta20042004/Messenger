@@ -12,7 +12,7 @@ public class Message {
 
     public String reciever;
 
-    public Date timeSpan ;
+   // public Date timeSpan ;
 
-    public String id ;
+    public int messageNumber ;
 }

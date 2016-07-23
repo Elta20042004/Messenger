@@ -31,8 +31,8 @@ public class ChatActivity extends AppCompatActivity {
     private boolean side = false;
     private String me;
     private String reciever;
-    private HashSet<String> messageIds;
-    private Date lastSync;
+    private HashSet<Integer> messageIds;
+    private int lastSync;
     public ConnectionToServer connectionToServer = new ConnectionToServer();
     private Timer timer;
     private MyTimerTask timerTask;
@@ -60,7 +60,7 @@ public class ChatActivity extends AppCompatActivity {
                 reciever = recieverKey;
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.HOUR, -1);
-                lastSync = cal.getTime();
+                lastSync = -1;
 
                 chatText.setOnKeyListener(new View.OnKeyListener() {
                     @Override
@@ -114,7 +114,7 @@ public class ChatActivity extends AppCompatActivity {
                                 Response<MessageId> message = response.body();
                                 if (message.ErrorCode == ResponseCode.Success) {
                                     adp.add(new ChatMessage(true, newMessage));
-                                    messageIds.add(message.Data.Id);
+                                    messageIds.add(message.Data.messageNumber);
                                 }
                             } else {
                                 // error response, no access to resource?
@@ -135,10 +135,8 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(lastSync);
-            final Date tempLastSync = new Date();
             connectionToServer.getMessageService()
-                    .getLastMessages(me, date)
+                    .getLastMessages(me, lastSync)
                     .enqueue(new Callback<Response<List<Message>>>() {
                         @Override
                         public void onResponse(Call<Response<List<Message>>> call,
@@ -146,18 +144,18 @@ public class ChatActivity extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 Response<List<Message>> messages = response.body();
                                 if (messages.ErrorCode == ResponseCode.Success) {
-                                    lastSync = tempLastSync;
                                     for (Message message:messages.Data) {
-                                        if (!messageIds.contains(message.id)) {
+                                        if (!messageIds.contains(message.messageNumber)) {
                                             if (message.sender.equalsIgnoreCase(reciever)) {
                                                 adp.add(new ChatMessage(false, message.text));
-                                                messageIds.add(message.id);
+                                                messageIds.add(message.messageNumber);
                                             }
                                             else if (message.sender.equalsIgnoreCase(me)) {
                                                 adp.add(new ChatMessage(true, message.text));
-                                                messageIds.add(message.id);
+                                                messageIds.add(message.messageNumber);
                                             }
                                         }
+                                        lastSync = Math.max( lastSync, message.messageNumber );
                                     }
                                 }
                             } else {
@@ -169,15 +167,6 @@ public class ChatActivity extends AppCompatActivity {
                         public void onFailure(Call<Response<List<Message>>> call, Throwable t) {
                         }
                     });
-
-
-//            runOnUiThread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    adp.setText(strDate);
-//                }
-//            });
         }
     }
 }

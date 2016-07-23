@@ -27,10 +27,8 @@ public class ExampleUnitTest {
        Response<com.example.home.mychat.provider.Response<MessageId>> messageResponse =
                connectionToServer.getMessageService().sendMessage("Alex","Lena","I love you").execute();
 
-       String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date(0));
-
        Call<com.example.home.mychat.provider.Response<List<Message>>> res =
-               connectionToServer.getMessageService().getLastMessages("Lena",  date);
+               connectionToServer.getMessageService().getLastMessages("Lena",  -1);
        Response<com.example.home.mychat.provider.Response<List<Message>>> resp = res.execute();
        com.example.home.mychat.provider.Response<List<Message>> resList = resp.body();
 

@@ -4,6 +4,6 @@ namespace Server.Entities
 {
     public class MessageId
     {
-        public Guid Id { get; set; }
+        public int MessageNumber { get; set; }
     }
 }

@@ -38,14 +38,14 @@ namespace Server.Test
             Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "Hello").ErrorCode);
             Assert.AreEqual(ResponseCode.Success, messageStore.SendMessage("Moshe", "Boris", "How are you").ErrorCode);
 
-            var rez = messageStore.GetMessage("Boris", DateTime.Now.AddSeconds(-5));
+            var rez = messageStore.GetMessage("Boris", -1);
             Assert.AreEqual("Moshe", rez.Data[0].Sender);
             Assert.AreEqual("Boris", rez.Data[0].Reciever);
             Assert.AreEqual("Moshe", rez.Data[1].Sender);
             Assert.AreEqual("Boris", rez.Data[1].Reciever);
             Assert.AreEqual(2, rez.Data.Count);
 
-            var rez2 = messageStore.GetMessage("Moshe", DateTime.Now.AddSeconds(-5));
+            var rez2 = messageStore.GetMessage("Moshe", -1);
             Assert.AreEqual(2, rez2.Data.Count);
             Assert.AreEqual("Moshe", rez2.Data[0].Sender);
             Assert.AreEqual("Boris", rez2.Data[0].Reciever);

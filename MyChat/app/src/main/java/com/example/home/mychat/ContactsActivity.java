@@ -106,8 +106,6 @@ public class ContactsActivity extends AppCompatActivity {
        });
     }
 
-
-
     private boolean addNewContact() {
         final String newContact = contactName.getText().toString();
 
