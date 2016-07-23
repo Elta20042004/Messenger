@@ -1,13 +1,8 @@
 package com.example.home.mychat.provider;
 
-import com.example.home.mychat.provider.ContactService;
-import com.example.home.mychat.provider.MessageService;
-import com.example.home.mychat.provider.ResponseCode;
-import com.example.home.mychat.provider.ResponseCodeDeserializer;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 
