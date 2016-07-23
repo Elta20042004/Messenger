@@ -22,7 +22,8 @@ public class ConnectionToServer {
             .create();
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://192.168.1.100:9000/")
+            //.baseUrl("http://192.168.1.100:9000/")    //- local server
+            .baseUrl("http://ec2-52-25-170-57.us-west-2.compute.amazonaws.com:9000/")      //- remote server
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 

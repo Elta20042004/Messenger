@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin.Hosting;
 using System;
+using System.Configuration;
 using System.Net.Http;
 
 namespace Server
@@ -8,7 +9,8 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            string baseAddress = "http://*:9000/";
+            // string baseAddress = "http://*:80/";
+            string baseAddress = ConfigurationManager.AppSettings.Get("host");
 
             // Start OWIN host 
             using (WebApp.Start<Startup>(url: baseAddress))

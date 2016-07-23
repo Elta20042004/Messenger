@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
 using Microsoft.Practices.ServiceLocation;
 using Server.Entities;
 
@@ -17,6 +18,7 @@ namespace Server
         // POST http://localhost:9000/api/login?login=Moshe&password=bla
         public Response<bool> Post(string login, string password)
         {
+            Console.WriteLine(this.Request.RequestUri);
             bool ok = _loginPasswordVerification.Authorization(login, password);
             if (ok)
             {

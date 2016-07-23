@@ -11,12 +11,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import com.example.home.mychat.provider.*;
 import retrofit2.Call;
@@ -144,6 +139,14 @@ public class ChatActivity extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 Response<List<Message>> messages = response.body();
                                 if (messages.ErrorCode == ResponseCode.Success) {
+                                    Collections.sort(messages.Data, new Comparator<Message>() {
+                                        @Override
+                                        public int compare(Message entry1, Message entry2) {
+
+                                            return Integer.compare(entry1.messageNumber, entry2.messageNumber);
+                                        }
+                                    });
+
                                     for (Message message:messages.Data) {
                                         if (!messageIds.contains(message.messageNumber)) {
                                             if (message.sender.equalsIgnoreCase(reciever)) {

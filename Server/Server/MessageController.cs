@@ -21,6 +21,7 @@ namespace Server
         // GET http://localhost:9000/api/message?userId=Moshe&lastMessageNumber=-1
         public Response<List<Message>> Get(string userId, int lastMessageNumber)
         {
+            Console.WriteLine(this.Request.RequestUri);
             var lastMessages = _messageStore.GetMessage(userId, lastMessageNumber);
             return lastMessages;
         }
@@ -28,6 +29,7 @@ namespace Server
         // POST http://localhost:9000/api/message?sender=Moshe&reciever=Avi&text=Hello
         public Response<MessageId> Post(string sender, string reciever, string text)
         {
+            Console.WriteLine(this.Request.RequestUri);
             Response<MessageId> answer = _messageStore.SendMessage(sender, reciever, text);
             return answer;
         }  
