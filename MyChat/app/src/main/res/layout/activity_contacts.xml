@@ -5,11 +5,14 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+    <include layout="@layout/toolbar" />
+
     <ListView
         android:id="@+id/ListviewContacts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"/>
+        android:layout_marginBottom="80dp"
+        android:layout_below="@+id/toolbar_actionbar"/>
 
     <RelativeLayout
         android:id="@+id/formContacts"

@@ -69,6 +69,13 @@ public class LoginPasswordActivity extends AppCompatActivity implements LoaderCa
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_login_password );
+
+        Object o = findViewById( R.id.toolbar_actionbar );
+        android.support.v7.widget.Toolbar mActionBarToolbar = (android.support.v7.widget.Toolbar) o;
+        setSupportActionBar( mActionBarToolbar );
+        getSupportActionBar().setDisplayShowTitleEnabled( true );
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById( R.id.email );
         populateAutoComplete();
@@ -204,7 +211,7 @@ public class LoginPasswordActivity extends AppCompatActivity implements LoaderCa
                     {
                         Intent intent = new Intent(LoginPasswordActivity.this, ContactsActivity.class);
                         Bundle b = new Bundle();
-                        b.putString("sendler",email);
+                        b.putString("sender",email);
                         intent.putExtras(b);
                         LoginPasswordActivity.this.startActivity(intent);
                         finish();

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.example.home.mychat.provider.ConnectionToServer;
@@ -28,10 +30,17 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onCreate( final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_contacts);
+
+        Object o = findViewById(R.id.toolbar_actionbar);
+        android.support.v7.widget.Toolbar mActionBarToolbar = (android.support.v7.widget.Toolbar) o;
+        setSupportActionBar(mActionBarToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled( true );
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         Bundle b = getIntent().getExtras();
-        email = b.getString("sendler");
+        email = b.getString("sender");
 
         Call<Response<List<String>>> call =
                 connectionToServer.getContactService().getContacts(email);
@@ -53,11 +62,11 @@ public class ContactsActivity extends AppCompatActivity {
         });
 
 
+
+
         addContact = (Button) findViewById(R.id.btnContacts);
 
         listContacts = (ListView) findViewById(R.id.ListviewContacts);
-
-
 
         //textView = (LinearLayout)findViewById(R.id.text1);
 
@@ -97,13 +106,37 @@ public class ContactsActivity extends AppCompatActivity {
                Intent intent = new Intent(ContactsActivity.this, ChatActivity.class);
                Bundle b = getIntent().getExtras();
 
-               b.putString("sendler",email);
+               b.putString("sender",email);
                b.putString("reciever",str);
                intent.putExtras(b);
                ContactsActivity.this.startActivity(intent);
                finish();
            }
        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ContactsActivity.this, LoginPasswordActivity.class);
+        ContactsActivity.this.startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_contacts, menu);
+        return true;
     }
 
     private boolean addNewContact() {
